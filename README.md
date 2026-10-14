@@ -19,7 +19,7 @@ HTML, CSS, dan JavaScript murni tanpa library, dan nyaman dipakai di HP.
 
 <br>
 
-<img src="assets/screenshots/desktop.png" alt="Tampilan desktop saat lampu menyala" width="760">
+<img width="1366" height="768" alt="desktop" src="https://github.com/user-attachments/assets/e35522aa-713b-433f-8512-bf0435c3d6b6" />
 
 </div>
 
@@ -31,7 +31,7 @@ HTML, CSS, dan JavaScript murni tanpa library, dan nyaman dipakai di HP.
 
 | Lampu mati (HP) | Lampu menyala (HP) |
 |:---:|:---:|
-| <img src="assets/screenshots/mobile-off.png" alt="Tampilan HP, lampu mati" width="260"> | <img src="assets/screenshots/mobile-on.png" alt="Tampilan HP, lampu menyala" width="260"> |
+| <img width="390" height="844" alt="mobile-off" src="https://github.com/user-attachments/assets/30f8c8a7-b215-4d89-ad0c-425b7a40003b" /> | <img width="390" height="844" alt="mobile-on" src="https://github.com/user-attachments/assets/bf250535-5b5e-44a0-be46-d743095ae373" /> |
 
 </div>
 
