@@ -11,9 +11,9 @@ HTML, CSS, dan JavaScript murni tanpa library, dan nyaman dipakai di HP.
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-chr5tt.github.io-f2a93b?style=for-the-badge)](https://chr5tt.github.io/Lamp-Login/)
 
-![HTML5](https://img.shields.io/badge/HTML5-e34f26?logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572b6?logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-f7df1e?logo=javascript&logoColor=black)
+[![HTML5](https://img.shields.io/badge/HTML5-e34f26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML) 
+[![CSS3](https://img.shields.io/badge/CSS3-1572b6?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![JavaScript](https://img.shields.io/badge/JavaScript-f7df1e?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 ![Tanpa dependensi](https://img.shields.io/badge/dependencies-0-success)
 ![Responsif](https://img.shields.io/badge/mobile-friendly-8a5cf6)
 
@@ -70,9 +70,7 @@ Lamp-Login/
 │   ├── fireflies.js      Animasi kunang-kunang
 │   └── form.js           Validasi form dan notifikasi
 └── assets/
-    ├── favicon.svg
-    ├── social-preview.png
-    └── screenshots/
+    └── favicon.svg
 ```
 
 ## Kustomisasi
