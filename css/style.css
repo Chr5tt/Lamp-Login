@@ -1,0 +1,591 @@
+/* ==========================================================================
+   Lamp Login - style.css
+   Tarik tali lampu, ruangan menyala, form login muncul.
+   Urutan: token > dasar > ruangan > lampu > kartu login > toast > responsif
+   ========================================================================== */
+
+/* ---------- Token ---------- */
+:root {
+  --ink: #08090c;
+  --wall: #161923;
+  --bulb: #ffd98a;
+  --amber: #f2a93b;
+  --amber-deep: #c9811a;
+  --text: #f4efe6;
+  --muted: #9a9cab;
+  --line: rgba(255, 255, 255, 0.1);
+  --danger: #ff8f7e;
+
+  --font-display: "Bricolage Grotesque", "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Panjang kabel lampu menyesuaikan tinggi layar */
+  --wire: clamp(48px, 9vh, 90px);
+}
+
+/* ---------- Dasar ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  overflow-x: hidden;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Saat lampu mati, halaman dikunci setinggi layar agar tidak bisa di-scroll kosong */
+body:not(.light-on) {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+h1, p { margin: 0; }
+button, input { font: inherit; color: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+
+.ico {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ico-fill { stroke: none; }
+
+:focus-visible {
+  outline: 2px solid var(--bulb);
+  outline-offset: 3px;
+}
+
+/* ---------- Ruangan ---------- */
+.room {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(120% 80% at 50% 0%, var(--wall) 0%, var(--ink) 70%);
+}
+.room::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(110% 80% at 50% 0%, #2e2619 0%, #0d0e12 72%);
+  transition: opacity 0.8s ease;
+}
+body.light-on .room::after { opacity: 1; }
+
+#fireflies {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.scene {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* Isi dibatasi ±1180px dan dipusatkan lewat padding, bukan max-width,
+     supaya cahaya lampu tidak terpotong di tepi kontainer */
+  padding: 0 max(clamp(16px, 5vw, 48px), calc(50% - 542px)) max(32px, env(safe-area-inset-bottom));
+  overflow-x: hidden;   /* fallback browser lama */
+  overflow-x: clip;     /* sinar & cahaya lampu tidak melebarkan halaman */
+}
+
+/* ---------- Lampu ---------- */
+.lamp-zone {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lamp {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: top center;
+}
+.lamp.is-swinging { animation: swing 0.9s ease-out; }
+
+.lamp-wire {
+  width: 3px;
+  height: var(--wire);
+  background: linear-gradient(90deg, #17181c, #4a4d57, #17181c);
+}
+.lamp-cap {
+  width: 24px;
+  height: 12px;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(90deg, #2a2a30, #6a6c76, #2a2a30);
+}
+
+.lamp-head {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lamp-shade {
+  position: relative;
+  z-index: 2;
+  width: 104px;
+  height: 56px;
+  background: linear-gradient(180deg, #2b2d37 0%, #191a20 100%);
+  clip-path: polygon(24% 0, 76% 0, 100% 100%, 0 100%);
+}
+.lamp-shade::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background: #3a3d49;
+  transition: background 0.4s ease;
+}
+body.light-on .lamp-shade::after { background: var(--bulb); }
+
+.lamp-bulb {
+  position: relative;
+  z-index: 2;
+  width: 36px;
+  height: 22px;
+  margin-top: -3px;
+  border-radius: 0 0 18px 18px;
+  background: #3b3e48;
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+body.light-on .lamp-bulb {
+  background: radial-gradient(circle at 50% 25%, #fffbe8 0%, var(--bulb) 75%);
+  box-shadow: 0 0 24px #ffd000, 0 0 56px #ffae00, 0 0 96px rgba(255, 140, 0, 0.8);
+}
+
+/* Cahaya sekitar bohlam */
+.lamp-glow {
+  position: absolute;
+  z-index: 0;
+  top: 66px;
+  left: 50%;
+  width: min(900px, 200vw);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255, 196, 96, 0.3) 0%, rgba(255, 170, 60, 0.1) 35%, transparent 68%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.7s ease;
+}
+
+/* Sinar lurus ke bawah */
+.lamp-beam {
+  position: absolute;
+  z-index: 1;
+  top: 54px;
+  left: 50%;
+  width: clamp(320px, 140vw, 640px);
+  height: min(78vh, 760px);
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(255, 222, 140, 0.4) 0%, rgba(255, 190, 80, 0.13) 40%, rgba(255, 180, 60, 0) 100%);
+  clip-path: polygon(calc(50% - 38px) 0, calc(50% + 38px) 0, 100% 100%, 0 100%);
+  filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+body.light-on .lamp-glow,
+body.light-on .lamp-beam { opacity: 1; }
+
+/* Tali: area sentuh 48px supaya mudah ditarik di HP */
+.cord {
+  position: absolute;
+  z-index: 3;
+  top: 50px;
+  left: calc(50% + 42px);
+  width: 48px;
+  margin: 0 0 0 -24px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.cord-line {
+  width: 2px;
+  height: 64px;
+  background: repeating-linear-gradient(0deg, #8d8f99 0 3px, #464850 3px 6px);
+  transition: height 0.16s ease-out;
+}
+.cord-handle {
+  width: 14px;
+  height: 24px;
+  border-radius: 7px;
+  background: linear-gradient(135deg, #ffd466, #b9791a);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.cord:hover .cord-handle { filter: brightness(1.15); transform: scale(1.1); }
+.cord.is-pulling .cord-line { height: 88px; }
+.cord:focus-visible { outline: none; }
+.cord:focus-visible .cord-handle { outline: 2px solid #fff; outline-offset: 4px; }
+
+/* Satu momen animasi: tali bergoyang beberapa kali saat lampu masih mati */
+body:not(.light-on) .cord { animation: nudge 1.8s ease-in-out 1.2s 3; }
+
+.hint {
+  margin-top: 96px; /* tali menjuntai ±64px di bawah kap lampu */
+  max-width: 24ch;
+  max-height: 80px;
+  overflow: hidden;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.98rem;
+  transition: opacity 0.3s ease, max-height 0.5s ease, margin 0.5s ease;
+}
+body.light-on .hint { opacity: 0; max-height: 0; margin-top: 0; }
+
+/* ---------- Kartu login ---------- */
+.login-zone {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  margin-top: 76px; /* beri ruang agar tali tetap terlihat dan bisa ditarik lagi */
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(24px) scale(0.97);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease,
+    visibility 0s linear 0.45s;
+}
+body.light-on .login-zone {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.55s ease 0.15s,
+    transform 0.75s var(--ease-out) 0.15s,
+    visibility 0s;
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  padding: clamp(24px, 6vw, 40px) clamp(20px, 5.5vw, 36px);
+  border-radius: 28px;
+  background: linear-gradient(170deg, rgba(38, 33, 28, 0.86), rgba(17, 18, 23, 0.9) 55%);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 214, 140, 0.2);
+  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.8), 0 0 60px -10px rgba(255, 176, 60, 0.18);
+}
+
+.card-head { margin-bottom: 28px; }
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.65rem, 6.2vw, 2rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.card-sub { margin-top: 8px; color: var(--muted); }
+
+/* Field */
+.field { margin-bottom: 18px; }
+.field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #d9d6cf;
+}
+
+.control { position: relative; display: flex; align-items: center; }
+.control > .ico {
+  position: absolute;
+  left: 16px;
+  width: 18px;
+  height: 18px;
+  color: #7c7f8e;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+.control input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px 0 46px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.045);
+  font-size: 1rem; /* 16px: mencegah iOS zoom otomatis saat fokus */
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.control input.has-toggle { padding-right: 52px; }
+.control input::placeholder { color: #6a6d7c; }
+.control:focus-within > .ico { color: var(--amber); }
+.control input:focus {
+  border-color: var(--amber);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 0 4px rgba(242, 169, 59, 0.16);
+}
+.control input:-webkit-autofill {
+  -webkit-text-fill-color: var(--text);
+  -webkit-box-shadow: 0 0 0 100px #25211c inset;
+  caret-color: var(--text);
+}
+
+.field.has-error input { border-color: var(--danger); }
+.field.has-error input:focus { box-shadow: 0 0 0 4px rgba(255, 143, 126, 0.18); }
+.error { margin-top: 8px; font-size: 0.86rem; color: var(--danger); }
+.error:empty { display: none; }
+
+.toggle {
+  position: absolute;
+  right: 4px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: #8a8d9c;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: color 0.2s ease;
+}
+.toggle:hover { color: var(--text); }
+
+/* Opsi di bawah form */
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin: 2px 0 20px;
+}
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 0.92rem;
+  color: #c9c6bf;
+  cursor: pointer;
+}
+.check input {
+  -webkit-appearance: none;
+  appearance: none;
+  display: grid;
+  place-content: center;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.check input::after {
+  content: "";
+  width: 5px;
+  height: 10px;
+  border: solid #1d1405;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-1px) rotate(45deg);
+  opacity: 0;
+}
+.check input:checked { background: var(--amber); border-color: var(--amber); }
+.check input:checked::after { opacity: 1; }
+
+.link {
+  padding: 10px 0;
+  border: 0;
+  background: none;
+  color: var(--amber);
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* Tombol utama */
+.btn-primary {
+  width: 100%;
+  min-height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffc95f 0%, #f0a02c 100%);
+  color: #1d1405;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  box-shadow: 0 10px 30px -8px rgba(242, 169, 59, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transition: transform 0.15s ease, filter 0.2s ease, box-shadow 0.25s ease;
+}
+.btn-primary:hover { filter: brightness(1.06); box-shadow: 0 14px 34px -8px rgba(242, 169, 59, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.45); }
+.btn-primary:active { transform: translateY(1px); }
+.btn-primary:disabled { cursor: progress; filter: none; opacity: 0.85; }
+
+.spinner {
+  display: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(29, 20, 5, 0.3);
+  border-top-color: #1d1405;
+  animation: spin 0.7s linear infinite;
+}
+.btn-primary[aria-busy="true"] .spinner { display: inline-block; }
+
+/* Pemisah + login sosial */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0 20px;
+  color: #7d808f;
+  font-size: 0.86rem;
+}
+.divider::before,
+.divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+.socials { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.btn-social {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  font-weight: 500;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.btn-social:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.22); }
+
+.card-foot { margin-top: 20px; text-align: center; color: var(--muted); font-size: 0.92rem; }
+.card-foot .link { padding: 10px 4px; }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  z-index: 50;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #1b1d25;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+  font-size: 0.94rem;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 24px);
+  transition: opacity 0.3s ease, transform 0.45s var(--ease-out);
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast .ico { color: var(--amber); }
+.toast[data-type="error"] .ico { color: var(--danger); }
+
+/* ---------- Animasi ---------- */
+@keyframes swing {
+  0%   { transform: rotate(0); }
+  25%  { transform: rotate(2.6deg); }
+  55%  { transform: rotate(-1.6deg); }
+  80%  { transform: rotate(0.6deg); }
+  100% { transform: rotate(0); }
+}
+@keyframes nudge {
+  0%, 100% { transform: translateY(0); }
+  30%      { transform: translateY(10px); }
+  55%      { transform: translateY(-2px); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- Layar lebar (desktop, tablet landscape, HP landscape) ---------- */
+@media (min-width: 860px), (min-width: 600px) and (max-height: 520px) and (orientation: landscape) {
+  :root { --wire: clamp(72px, 13vh, 130px); }
+
+  .scene {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-content: stretch;
+    column-gap: clamp(24px, 5vw, 72px);
+  }
+  .lamp-zone { align-self: stretch; }
+  .login-zone { align-self: center; margin-top: 0; padding-block: 40px; }
+
+  .toast { left: auto; right: 32px; transform: translateY(24px); }
+  .toast.show { transform: none; }
+}
+
+/* Tinggi layar sangat pendek: rapatkan kartu */
+@media (max-height: 520px) {
+  .card { padding-block: 20px; }
+  .card-head { margin-bottom: 16px; }
+  .field { margin-bottom: 12px; }
+}
+
+/* ---------- HP kecil ---------- */
+@media (max-width: 380px) {
+  .socials { grid-template-columns: 1fr; }
+  .cord { left: calc(50% + 38px); }
+}
+
+/* ---------- Hormati pengaturan "kurangi gerakan" ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}
