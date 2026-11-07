@@ -10,22 +10,6 @@
   var toggleBtn = document.getElementById('togglePassword');
   var toggleIcon = document.getElementById('toggleIcon');
 
-  var toast = document.getElementById('toast');
-  var toastMsg = document.getElementById('toastMsg');
-  var toastIcon = document.getElementById('toastIcon');
-  var toastTimer = null;
-
-  /* ---------- Toast ---------- */
-  function showToast(message, type) {
-    type = type || 'success';
-    toastMsg.textContent = message;
-    toast.setAttribute('data-type', type);
-    toastIcon.setAttribute('href', type === 'error' ? '#i-alert' : '#i-check');
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 3200);
-  }
-
   /* ---------- Validasi ---------- */
   function setError(input, message) {
     var field = input.closest('.field');
@@ -76,8 +60,7 @@
     e.preventDefault();
     if (!validate()) return;
 
-    var raw = identity.value.trim();
-    var name = raw.split('@')[0];
+    var name = identity.value.trim().split('@')[0];
 
     submitBtn.disabled = true;
     submitBtn.setAttribute('aria-busy', 'true');
@@ -88,20 +71,23 @@
       submitBtn.disabled = false;
       submitBtn.removeAttribute('aria-busy');
       btnLabel.textContent = 'Masuk';
-      showToast('Berhasil masuk. Halo, ' + name + '!');
+      LampToast.show('Berhasil masuk. Halo, ' + name + '!');
     }, 1200);
   });
 
   /* ---------- Tombol lain (demo) ---------- */
   document.querySelectorAll('.btn-social').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      showToast('Masuk dengan ' + btn.getAttribute('data-provider') + ' belum disambungkan.');
+      LampToast.show('Masuk dengan ' + btn.getAttribute('data-provider') + ' belum disambungkan.');
     });
   });
-  document.getElementById('forgotBtn').addEventListener('click', function () {
-    showToast('Fitur lupa kata sandi belum disambungkan.');
-  });
-  document.getElementById('signupBtn').addEventListener('click', function () {
-    showToast('Halaman pendaftaran belum disambungkan.');
-  });
+  /* ---------- Datang dari halaman daftar / reset ---------- */
+  var params = new URLSearchParams(location.search);
+  var notice = params.get('daftar') === 'berhasil' ? 'Akun berhasil dibuat. Silakan masuk.'
+             : params.get('reset') === 'berhasil' ? 'Kata sandi diperbarui. Silakan masuk.'
+             : '';
+  if (notice) {
+    LampToast.show(notice);
+    try { history.replaceState(null, '', location.pathname); } catch (err) { /* abaikan */ }
+  }
 })();

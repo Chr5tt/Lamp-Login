@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08090c">
+  <meta name="color-scheme" content="dark">
+  <title>Lupa kata sandi | Lamp Login</title>
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <noscript>
+    <style>.login-zone{opacity:1;visibility:visible;transform:none}.hint{display:none}</style>
+  </noscript>
+</head>
+<body>
+  <script>try{if(sessionStorage.getItem('lamp-lit')==='1')document.body.classList.add('light-on')}catch(e){}</script>
+
+  <!-- Sprite ikon -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></symbol>
+      <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="room" aria-hidden="true"></div>
+  <canvas id="fireflies" aria-hidden="true"></canvas>
+
+  <main class="scene">
+
+    <!-- Lampu gantung -->
+    <section class="lamp-zone" aria-label="Lampu">
+      <div class="lamp" id="lamp">
+        <span class="lamp-wire"></span>
+        <span class="lamp-cap"></span>
+
+        <div class="lamp-head">
+          <span class="lamp-glow"></span>
+          <span class="lamp-beam"></span>
+          <span class="lamp-shade"></span>
+          <span class="lamp-bulb"></span>
+
+          <button type="button" class="cord" id="lampCord" aria-pressed="false" aria-label="Nyalakan lampu">
+            <span class="cord-line"></span>
+            <span class="cord-handle"></span>
+          </button>
+        </div>
+      </div>
+
+      <p class="hint" id="hint">Tarik tali emas untuk menyalakan lampu</p>
+    </section>
+
+    <section class="login-zone" aria-label="Lupa kata sandi">
+      <div class="card card--wide">
+
+        <!-- Langkah 1: masukkan email -->
+        <div id="stepForm">
+          <header class="card-head">
+            <h1 class="card-title">Lupa kata sandi?</h1>
+            <p class="card-sub">Masukkan email akunmu. Kami kirim tautan untuk membuat kata sandi baru.</p>
+          </header>
+
+          <form id="forgotForm" novalidate>
+            <div class="field">
+              <label for="email">Email</label>
+              <div class="control">
+                <svg class="ico" aria-hidden="true"><use href="#i-mail"/></svg>
+                <input type="email" id="email" name="email" placeholder="nama@email.com"
+                       autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false"
+                       inputmode="email" aria-describedby="email-error">
+              </div>
+              <p class="error" id="email-error" role="alert"></p>
+            </div>
+
+            <button type="submit" class="btn-primary" id="submitBtn">
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="btn-label">Kirim tautan reset</span>
+            </button>
+          </form>
+
+          <p class="card-foot card-foot--left">
+            <a class="link back-link" href="index.html">
+              <svg class="ico" aria-hidden="true"><use href="#i-arrow-left"/></svg>
+              Kembali ke halaman masuk
+            </a>
+          </p>
+        </div>
+
+        <!-- Langkah 2: konfirmasi terkirim -->
+        <div id="stepSent" hidden>
+          <div class="sent-badge" aria-hidden="true">
+            <svg class="ico"><use href="#i-mail"/></svg>
+          </div>
+
+          <header class="card-head">
+            <h1 class="card-title" id="sentTitle" tabindex="-1">Cek emailmu</h1>
+            <p class="card-sub">
+              Jika ada akun dengan email <span class="sent-email" id="sentEmail"></span>,
+              tautan untuk mengatur ulang kata sandi sudah kami kirim.
+            </p>
+          </header>
+
+          <p class="sent-note">Belum masuk? Cek juga folder spam atau promosi.</p>
+
+          <div class="sent-actions">
+            <button type="button" class="btn-ghost" id="resendBtn" disabled>Kirim ulang tautan</button>
+            <button type="button" class="btn-ghost" id="changeBtn">Ganti email</button>
+          </div>
+
+          <!-- Khusus demo: hapus blok ini saat tersambung ke server. Tautan asli datang lewat email. -->
+          <p class="demo-note">
+            Mode demo: tidak ada email yang benar-benar dikirim.
+            <a href="reset.html?token=demo">Buka halaman reset</a>
+          </p>
+
+          <p class="card-foot card-foot--left">
+            <a class="link back-link" href="index.html">
+              <svg class="ico" aria-hidden="true"><use href="#i-arrow-left"/></svg>
+              Kembali ke halaman masuk
+            </a>
+          </p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Notifikasi -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <svg class="ico" aria-hidden="true"><use href="#i-check" id="toastIcon"/></svg>
+    <span id="toastMsg"></span>
+  </div>
+
+  <script src="js/toast.js"></script>
+  <script src="js/fireflies.js"></script>
+  <script src="js/lamp.js"></script>
+  <script src="js/forgot.js"></script>
+</body>
+</html>

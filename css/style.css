@@ -56,6 +56,7 @@ body:not(.light-on) {
 }
 
 h1, p { margin: 0; }
+[hidden] { display: none !important; }
 button, input { font: inherit; color: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
 
@@ -428,6 +429,8 @@ body.light-on .login-zone {
   transform: translateY(-1px) rotate(45deg);
   opacity: 0;
 }
+.check input { flex: none; }
+.check input[aria-invalid="true"] { border-color: var(--danger); }
 .check input:checked { background: var(--amber); border-color: var(--amber); }
 .check input:checked::after { opacity: 1; }
 
@@ -442,6 +445,8 @@ body.light-on .login-zone {
   touch-action: manipulation;
 }
 .link:hover { text-decoration: underline; text-underline-offset: 3px; }
+a.link { display: inline-block; text-decoration: none; }
+a.link:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 /* Tombol utama */
 .btn-primary {
@@ -510,6 +515,80 @@ body.light-on .login-zone {
 .card-foot { margin-top: 20px; text-align: center; color: var(--muted); font-size: 0.92rem; }
 .card-foot .link { padding: 10px 4px; }
 
+/* ---------- Halaman daftar ---------- */
+.card--wide { max-width: 460px; }
+.card--wide .card-head { margin-bottom: 24px; }
+
+.strength { display: none; align-items: center; gap: 12px; margin-top: 10px; }
+.strength.is-visible { display: flex; }
+.strength-bars { display: flex; flex: 1; gap: 6px; }
+.strength-bars span {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.12);
+  transition: background 0.25s ease;
+}
+.strength-text { min-width: 7.5em; text-align: right; font-size: 0.82rem; color: var(--muted); }
+
+.strength[data-level="1"] .strength-bars span:nth-child(-n+1) { background: #ff8f7e; }
+.strength[data-level="2"] .strength-bars span:nth-child(-n+2) { background: #f2a93b; }
+.strength[data-level="3"] .strength-bars span:nth-child(-n+3) { background: #b6d86a; }
+.strength[data-level="4"] .strength-bars span:nth-child(-n+4) { background: #6fd39b; }
+
+.terms { margin: 4px 0 20px; }
+.check--terms { align-items: flex-start; min-height: 0; padding: 6px 0; line-height: 1.45; }
+.check--terms input { margin-top: 1px; }
+.terms-link { color: var(--amber); font-weight: 500; }
+.terms .error { margin-top: 2px; }
+
+/* ---------- Lupa & reset kata sandi ---------- */
+a.back-link { display: inline-flex; align-items: center; gap: 8px; }
+a.back-link .ico { width: 16px; height: 16px; }
+.card-foot--left { margin-top: 22px; }
+
+.sent-badge {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(242, 169, 59, 0.35);
+  background: rgba(242, 169, 59, 0.12);
+  color: var(--amber);
+  box-shadow: 0 0 40px -8px rgba(242, 169, 59, 0.5);
+}
+.sent-badge .ico { width: 28px; height: 28px; }
+.sent-email { color: var(--text); font-weight: 600; word-break: break-all; }
+.sent-note { margin: 18px 0 14px; color: var(--muted); font-size: 0.92rem; }
+.sent-actions { display: grid; gap: 10px; }
+#sentTitle:focus { outline: none; }
+
+.btn-ghost {
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  font-weight: 500;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+.btn-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.22); }
+.btn-ghost:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.demo-note {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.demo-note a { color: var(--amber); font-weight: 500; }
+
 /* ---------- Toast ---------- */
 .toast {
   position: fixed;
@@ -561,7 +640,13 @@ body.light-on .login-zone {
     align-content: stretch;
     column-gap: clamp(24px, 5vw, 72px);
   }
-  .lamp-zone { align-self: stretch; }
+  .lamp-zone {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    height: 100dvh;
+  }
   .login-zone { align-self: center; margin-top: 0; padding-block: 40px; }
 
   .toast { left: auto; right: 32px; transform: translateY(24px); }

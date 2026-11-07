@@ -31,7 +31,19 @@ HTML, CSS, dan JavaScript murni tanpa library, dan nyaman dipakai di HP.
 
 | Lampu mati (HP) | Lampu menyala (HP) |
 |:---:|:---:|
-| <img width="390" height="844" alt="mobile-off" src="https://github.com/user-attachments/assets/30f8c8a7-b215-4d89-ad0c-425b7a40003b" /> | <img width="390" height="844" alt="mobile-on" src="https://github.com/user-attachments/assets/bf250535-5b5e-44a0-be46-d743095ae373" /> |
+| <img src="assets/screenshots/mobile-off.png" alt="Tampilan HP, lampu mati" width="260"> | <img src="assets/screenshots/mobile-on.png" alt="Tampilan HP, lampu menyala" width="260"> |
+
+<br>
+
+| Halaman daftar (desktop) | Halaman daftar (HP) |
+|:---:|:---:|
+| <img src="assets/screenshots/register-desktop.png" alt="Halaman daftar di desktop" width="420"> | <img src="assets/screenshots/register-mobile.png" alt="Halaman daftar di HP" width="200"> |
+
+<br>
+
+| Lupa kata sandi (desktop) | Kata sandi baru (HP) |
+|:---:|:---:|
+| <img src="assets/screenshots/forgot-desktop.png" alt="Halaman lupa kata sandi setelah tautan terkirim" width="420"> | <img src="assets/screenshots/reset-mobile.png" alt="Halaman reset kata sandi di HP" width="200"> |
 
 </div>
 
@@ -40,7 +52,11 @@ HTML, CSS, dan JavaScript murni tanpa library, dan nyaman dipakai di HP.
 - **Lampu interaktif.** Tarik tali emas, lampu berayun, sinar jatuh ke bawah, dan form muncul.
 - **Responsif.** Lampu di tengah atas pada HP, dua kolom pada layar lebar dan HP landscape.
 - **Kunang-kunang di canvas.** Redup saat gelap dan terang saat lampu menyala. Ringan, tajam di layar retina, dan berhenti saat tab tidak aktif.
+- **Halaman masuk, daftar, lupa kata sandi, dan reset** dengan gaya yang sama. Status lampu terbawa saat pindah halaman, jadi kalau lampu sudah menyala di halaman masuk, halaman daftar langsung terang.
 - **Form yang rapi.** Validasi per kolom, tombol lihat kata sandi, status loading, dan notifikasi.
+- **Indikator kekuatan kata sandi** (lemah sampai sangat kuat), cek kecocokan sandi, dan persetujuan syarat di halaman daftar.
+- **Alur lupa kata sandi lengkap.** Kirim tautan reset, layar konfirmasi "Cek emailmu" (pesan netral agar alamat email tidak bisa ditebak), jeda 30 detik untuk kirim ulang, lalu halaman buat kata sandi baru.
+- **Lampu menempel di desktop** saat form lebih tinggi dari layar, jadi tali tetap bisa dijangkau.
 - **Suara klik** dibuat dengan Web Audio API, jadi tidak perlu file audio.
 - **Ramah akses.** Tali bisa dipakai lewat keyboard dan pembaca layar, fokus terlihat jelas, dan mengikuti pengaturan *kurangi gerakan* di perangkat.
 - **Tanpa dependensi.** Tidak ada Tailwind, FontAwesome, atau framework. Ikon inline dan font punya fallback, jadi jalan offline.
@@ -62,15 +78,25 @@ npx serve .
 
 ```
 Lamp-Login/
-├── index.html            Struktur halaman
+├── index.html            Halaman masuk
+├── register.html         Halaman daftar
+├── forgot.html           Halaman lupa kata sandi
+├── reset.html            Halaman buat kata sandi baru
 ├── css/
 │   └── style.css         Semua gaya (token warna di :root)
 ├── js/
-│   ├── lamp.js           Lampu, tali, suara klik
+│   ├── lamp.js           Lampu, tali, suara klik, ingat status lampu
 │   ├── fireflies.js      Animasi kunang-kunang
-│   └── form.js           Validasi form dan notifikasi
+│   ├── toast.js          Notifikasi bersama (LampToast.show)
+│   ├── password.js       Indikator kekuatan kata sandi (bersama)
+│   ├── form.js           Validasi form masuk
+│   ├── register.js       Validasi form daftar
+│   ├── forgot.js         Kirim tautan reset + jeda kirim ulang
+│   └── reset.js          Validasi kata sandi baru
 └── assets/
-    └── favicon.svg
+    ├── favicon.svg
+    ├── social-preview.png
+    └── screenshots/
 ```
 
 ## Kustomisasi
@@ -99,6 +125,14 @@ const res = await fetch('/api/login', {
 if (!res.ok) { showToast('Email atau kata sandi salah.', 'error'); return; }
 showToast('Berhasil masuk.');
 ```
+Untuk halaman daftar, ganti blok `setTimeout` di `js/register.js` dengan `fetch('/api register', ...)` dengan cara yang sama.
+
+### Alur lupa kata sandi di server
+
+1. `forgot.html` mengirim email ke endpoint, misalnya `POST /api/forgot-password`. Server membuat token acak sekali pakai dengan masa berlaku singkat, lalu mengirim tautan `https://situsmu/reset.html?token=...` lewat email.
+2. Server **selalu membalas sukses**, baik email terdaftar maupun tidak. Ini mencegah orang menebak email mana yang punya akun (halaman ini sudah memakai kalimat netral untuk itu).
+3. `reset.html` membaca `token` dari URL dan mengirimnya bersama kata sandi baru ke server. Server yang memeriksa token (valid, belum kedaluwarsa, belum dipakai).
+4. Hapus blok `.demo-note` di `forgot.html`. Itu hanya pintasan demo ke halaman reset.
 
 > Jangan simpan atau cek kata sandi di sisi browser. Validasi sebenarnya harus selalu dilakukan di server.
 
@@ -112,7 +146,8 @@ showToast('Berhasil masuk.');
 
 - [ ] Tombol mode terang/gelap
 - [ ] Tombol bisu untuk suara klik
-- [ ] Halaman daftar dengan gaya yang sama
+- [x] Halaman daftar dengan gaya yang sama
+- [x] Halaman lupa kata sandi dan reset
 - [ ] Pilihan warna cahaya lampu (hangat, putih, biru)
 
 ## Dukungan browser

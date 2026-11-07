@@ -21,6 +21,7 @@
   </noscript>
 </head>
 <body>
+  <script>try{if(sessionStorage.getItem('lamp-lit')==='1')document.body.classList.add('light-on')}catch(e){}</script>
 
   <!-- Sprite ikon (inline, tanpa library eksternal) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -107,7 +108,7 @@
               <input type="checkbox" id="remember" name="remember">
               <span>Ingat saya</span>
             </label>
-            <button type="button" class="link" id="forgotBtn">Lupa kata sandi?</button>
+            <a class="link" href="forgot.html">Lupa kata sandi?</a>
           </div>
 
           <button type="submit" class="btn-primary" id="submitBtn">
@@ -129,7 +130,7 @@
           </button>
         </div>
 
-        <p class="card-foot">Belum punya akun? <button type="button" class="link" id="signupBtn">Daftar</button></p>
+        <p class="card-foot">Belum punya akun? <a class="link" href="register.html">Daftar</a></p>
       </div>
     </section>
   </main>
@@ -140,6 +141,7 @@
     <span id="toastMsg"></span>
   </div>
 
+  <script src="js/toast.js"></script>
   <script src="js/fireflies.js"></script>
   <script src="js/lamp.js"></script>
   <script src="js/form.js"></script>

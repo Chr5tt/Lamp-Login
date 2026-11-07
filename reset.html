@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08090c">
+  <meta name="color-scheme" content="dark">
+  <title>Kata sandi baru | Lamp Login</title>
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <noscript>
+    <style>.login-zone{opacity:1;visibility:visible;transform:none}.hint{display:none}</style>
+  </noscript>
+</head>
+<body>
+  <script>try{if(sessionStorage.getItem('lamp-lit')==='1')document.body.classList.add('light-on')}catch(e){}</script>
+
+  <!-- Sprite ikon -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol>
+      <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="room" aria-hidden="true"></div>
+  <canvas id="fireflies" aria-hidden="true"></canvas>
+
+  <main class="scene">
+
+    <!-- Lampu gantung -->
+    <section class="lamp-zone" aria-label="Lampu">
+      <div class="lamp" id="lamp">
+        <span class="lamp-wire"></span>
+        <span class="lamp-cap"></span>
+
+        <div class="lamp-head">
+          <span class="lamp-glow"></span>
+          <span class="lamp-beam"></span>
+          <span class="lamp-shade"></span>
+          <span class="lamp-bulb"></span>
+
+          <button type="button" class="cord" id="lampCord" aria-pressed="false" aria-label="Nyalakan lampu">
+            <span class="cord-line"></span>
+            <span class="cord-handle"></span>
+          </button>
+        </div>
+      </div>
+
+      <p class="hint" id="hint">Tarik tali emas untuk menyalakan lampu</p>
+    </section>
+
+    <section class="login-zone" aria-label="Buat kata sandi baru">
+      <div class="card card--wide">
+        <header class="card-head">
+          <h1 class="card-title">Buat kata sandi baru</h1>
+          <p class="card-sub">Pilih kata sandi yang kuat dan belum pernah kamu pakai di tempat lain.</p>
+        </header>
+
+        <form id="resetForm" novalidate>
+          <div class="field">
+            <label for="password">Kata sandi baru</label>
+            <div class="control">
+              <svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg>
+              <input type="password" id="password" name="password" class="has-toggle" placeholder="Minimal 6 karakter"
+                     autocomplete="new-password" aria-describedby="password-error strength-text">
+              <button type="button" class="toggle" id="togglePassword" aria-label="Tampilkan kata sandi" aria-pressed="false">
+                <svg class="ico" aria-hidden="true"><use href="#i-eye" id="toggleIcon"/></svg>
+              </button>
+            </div>
+            <div class="strength" id="strength" data-level="0">
+              <div class="strength-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+              <span class="strength-text" id="strength-text" aria-live="polite"></span>
+            </div>
+            <p class="error" id="password-error" role="alert"></p>
+          </div>
+
+          <div class="field">
+            <label for="confirm">Ulangi kata sandi baru</label>
+            <div class="control">
+              <svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg>
+              <input type="password" id="confirm" name="confirm" placeholder="Ketik ulang kata sandi"
+                     autocomplete="new-password" aria-describedby="confirm-error">
+            </div>
+            <p class="error" id="confirm-error" role="alert"></p>
+          </div>
+
+          <button type="submit" class="btn-primary" id="submitBtn">
+            <span class="spinner" aria-hidden="true"></span>
+            <span class="btn-label">Simpan kata sandi</span>
+          </button>
+        </form>
+
+        <p class="card-foot card-foot--left">
+          <a class="link back-link" href="index.html">
+            <svg class="ico" aria-hidden="true"><use href="#i-arrow-left"/></svg>
+            Kembali ke halaman masuk
+          </a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Notifikasi -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <svg class="ico" aria-hidden="true"><use href="#i-check" id="toastIcon"/></svg>
+    <span id="toastMsg"></span>
+  </div>
+
+  <script src="js/toast.js"></script>
+  <script src="js/password.js"></script>
+  <script src="js/fireflies.js"></script>
+  <script src="js/lamp.js"></script>
+  <script src="js/reset.js"></script>
+</body>
+</html>

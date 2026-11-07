@@ -1,7 +1,9 @@
-/* Lampu: tarik tali untuk menyalakan/mematikan. Memancarkan event "lamp:change". */
+/* Lampu: tarik tali untuk menyalakan/mematikan. Memancarkan event "lamp:change".
+   Status lampu diingat selama tab terbuka, jadi pindah halaman tidak membuat ruangan gelap lagi. */
 (function () {
   'use strict';
 
+  var KEY = 'lamp-lit';
   var body = document.body;
   var lamp = document.getElementById('lamp');
   var cord = document.getElementById('lampCord');
@@ -36,11 +38,20 @@
     }
   }
 
-  function setLit(lit) {
-    body.classList.toggle('light-on', lit);
+  function remember(lit) {
+    try { sessionStorage.setItem(KEY, lit ? '1' : '0'); } catch (err) { /* storage tidak tersedia */ }
+  }
+
+  function syncUi(lit) {
     cord.setAttribute('aria-pressed', String(lit));
     cord.setAttribute('aria-label', lit ? 'Matikan lampu' : 'Nyalakan lampu');
     document.dispatchEvent(new CustomEvent('lamp:change', { detail: { lit: lit } }));
+  }
+
+  function setLit(lit) {
+    body.classList.toggle('light-on', lit);
+    syncUi(lit);
+    remember(lit);
   }
 
   function toggle() {
@@ -62,4 +73,7 @@
   });
 
   cord.addEventListener('click', toggle);
+
+  // Halaman dibuka dengan lampu sudah menyala (kelas dipasang skrip kecil di awal <body>)
+  if (body.classList.contains('light-on')) syncUi(true);
 })();
